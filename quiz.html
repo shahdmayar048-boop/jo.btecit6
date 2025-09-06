@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبر معلوماتك - BTEC Planner</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+body {
+  font-family: 'Cairo', sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  color: white;
+  transition: background 1s ease;
+}
+
+header {
+  padding: 40px 20px;
+  font-size: 32px;
+  font-weight: bold;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+}
+
+h2 {
+  margin: 30px 0 15px;
+}
+
+button, .submit-btn, .back-btn {
+  margin: 10px;
+  padding: 12px 25px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(45deg,#ff9800,#ffc107);
+  color: white;
+  transition: 0.4s all;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+button:hover, .submit-btn:hover, .back-btn:hover {
+  background: linear-gradient(45deg,#ffc107,#ff5722);
+  transform: scale(1.1);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.question {
+  background: rgba(255,255,255,0.1);
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 10px;
+  text-align: right;
+}
+
+.options label {
+  display: block;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.result {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 30px;
+}
+</style>
+</head>
+<body>
+
+<header>📋 اختبر معلوماتك - BTEC Planner</header>
+
+<div class="container" id="selectionDiv">
+  <h2>اختر نوع الاختبار:</h2>
+  <button onclick="startQuiz('دين')">📖 الدين</button>
+  <button onclick="startQuiz('تاريخ')">🏰 التاريخ</button>
+  <button class="back-btn" onclick="goBack()">⬅️ العودة للصفحة الرئيسية</button>
+</div>
+
+<div class="container" id="quizDiv" style="display:none;">
+  <form id="quizForm">
+    <!-- الأسئلة سيتم إدراجها هنا بواسطة JavaScript -->
+  </form>
+  <button class="submit-btn" onclick="checkAnswers()">احسب نتيجتك</button>
+  <div class="result" id="resultDiv"></div>
+</div>
+
+<script>
+const quizData = {
+  "دين": [
+    {
+      question: "سورة آل عمران مدنية أم لا؟",
+      options: ["مدنية", "مكية"],
+      answer: "مدنية"
+    },
+    {
+      question: "كم عدد آيات سورة آل عمران؟",
+      options: ["200", "300"],
+      answer: "200"
+    },
+    {
+      question: "سورة آل عمران تعرف باسم الزهراء أي المضيئة؟",
+      options: ["صح", "خطأ"],
+      answer: "صح"
+    },
+    {
+      question: "معنى آية 102 'اتقوا الله تعالى'؟",
+      options: ["اعتصموا", "تسامحوا"],
+      answer: "اعتصموا"
+    },
+    {
+      question: "جمع الحمى في القرآن يعني؟",
+      options: ["أرض محمية", "جبل"],
+      answer: "أرض محمية"
+    },
+    {
+      question: "تعريف المشتبهات هو للراسخون في العلم؟",
+      options: ["صح", "خطأ"],
+      answer: "صح"
+    },
+    {
+      question: "معنى كلمة مضغة في الحديث الشريف؟",
+      options: ["قطعة من اللحم", "حجر صغير"],
+      answer: "قطعة من اللحم"
+    },
+    {
+      question: "الكفر الاعتقادي الأكبر يعني؟",
+      options: ["الخروج من الإسلام", "عدم الصلاة"],
+      answer: "الخروج من الإسلام"
+    },
+    {
+      question: "عبادة أحد مع الله تعالى تعتبر؟",
+      options: ["الشرك الأكبر", "الشرك الأصغر"],
+      answer: "الشرك الأكبر"
+    },
+    {
+      question: "تعد خيانة الأمانة صورة من صور؟",
+      options: ["النفاق العملي", "الصدق"],
+      answer: "النفاق العملي"
+    },
+    {
+      question: "المفهوم الذي تشير له عبارة 'حق الفرد في أن تكون له قيمة'؟",
+      options: ["الكرامة", "الحرية"],
+      answer: "الكرامة"
+    },
+    {
+      question: "الحرية كمبدأ إسلامي تعكس قوله تعالى 'لا إكراه في الدين'؟",
+      options: ["صح", "خطأ"],
+      answer: "صح"
+    },
+    {
+      question: "فرض الجهاد بمعناه الخاص كان بعد الهجرة إلى المدينة؟",
+      options: ["صح", "خطأ"],
+      answer: "صح"
+    },
+    {
+      question: "أحد الأمور التي لا تمثل الجهاد بمعناه الخاص؟",
+      options: ["الأمر بالمعروف والنهي عن المنكر", "القتال في المعركة", "تقديم المال اللازم"],
+      answer: "الأمر بالمعروف والنهي عن المنكر"
+    },
+    {
+      question: "ذروة سنام الإسلام كما ذكر النبي هي؟",
+      options: ["الجهاد", "الصلاة"],
+      answer: "الجهاد"
+    },
+    {
+      question: "الصحابي الجليل الذي جمع القرآن؟",
+      options: ["زيد بن ثابت", "أبو بكر الصديق"],
+      answer: "زيد بن ثابت"
+    },
+    {
+      question: "أم المؤمنين التي حفظ عندها المصحف الشريف؟",
+      options: ["حفصة", "عائشة"],
+      answer: "حفصة"
+    },
+    {
+      question: "حكم الأخذ بالعزيمة؟",
+      options: ["واجب", "مستحب"],
+      answer: "واجب"
+    },
+    {
+      question: "من الرخصة التي يجوز للمريض الأخذ بها؟",
+      options: ["الإفطار في رمضان", "التصدق"],
+      answer: "الإفطار في رمضان"
+    },
+    {
+      question: "وقعت معركة مؤتة في السنة؟",
+      options: ["الثامنة للهجرة", "الثالثة للهجرة"],
+      answer: "الثامنة للهجرة"
+    },
+    {
+      question: "رسل الحارث بن عمير الأزدي إلى؟",
+      options: ["حاكم بصرة", "النبي"],
+      answer: "حاكم بصرة"
+    },
+    {
+      question: "لقب الصحابي خالد بن الوليد؟",
+      options: ["سيف الله", "أسد الله"],
+      answer: "سيف الله"
+    },
+    {
+      question: "معنى لفظ 'القرح' في قوله تعالى؟",
+      options: ["الجرح", "المرض"],
+      answer: "الجرح"
+    },
+    {
+      question: "وقعت معركة أحد في السنة؟",
+      options: ["الثالثة للهجرة", "الثامنة للهجرة"],
+      answer: "الثالثة للهجرة"
+    },
+    {
+      question: "أسلم أبو هريرة على يد؟",
+      options: ["الطفيلي بن عمرو الدوسي", "زيد بن ثابت"],
+      answer: "الطفيلي بن عمرو الدوسي"
+    },
+    {
+      question: "فتح مكة في عام؟",
+      options: ["الثامن للهجرة", "العاشر للهجرة"],
+      answer: "الثامن للهجرة"
+    },
+    {
+      question: "المقصود بقوله تعالى 'لقوم يعقلون'؟",
+      options: ["أصحاب العقول السليمة", "العلماء فقط"],
+      answer: "أصحاب العقول السليمة"
+    },
+    {
+      question: "الحكم الشرعي لأخذ بالسنة والعمل بتوجيهاتها؟",
+      options: ["واجب", "مستحب"],
+      answer: "واجب"
+    },
+    {
+      question: "حرص النبي على وحدة أبناء مجتمع المدينة عن طريق؟",
+      options: ["المؤاخاة", "الصدقة"],
+      answer: "المؤاخاة"
+    }
+  ],
+
+  "تاريخ": [
+    {
+      question: "الموقع الأردني يعود تاريخه إلى 2.5 مليون عام وأقدم مواقع العصر الحجري القديم في آسيا؟",
+      options: ["دوقرة", "ذيبان"],
+      answer: "دوقرة"
+    },
+    {
+      question: "عاصمة المملكة المؤابية؟",
+      options: ["ذيبان", "الكرك"],
+      answer: "ذيبان"
+    },
+    {
+      question: "من المواقع الأردنية التي تعود إلى حقبة العصر الحجري الحديث؟",
+      options: ["عيون غزال", "تل الفخار"],
+      answer: "عيون غزال"
+    },
+    {
+      question: "من المواقع الأردنية التي تعود إلى حقبة الفارسية؟",
+      options: ["تل الفخار", "دوقرة"],
+      answer: "تل الفخار"
+    },
+    {
+      question: "تقع مدينة أم الجمال في؟",
+      options: ["المفرق", "الطفيلة"],
+      answer: "المفرق"
+    },
+    {
+      question: "من أشهر المعالم الأثرية في البترا؟",
+      options: ["قصر البنت", "خربة مدر"],
+      answer: "قصر البنت"
+    },
+    {
+      question: "اكتشف نفق اليرموك في عام؟",
+      options: ["2012", "2010"],
+      answer: "2012"
+    },
+    {
+      question: "تقع أقدم خارطة فسيفسائية للأراضي المقدسة في؟",
+      options: ["مادبا", "عمان"],
+      answer: "مادبا"
+    },
+    {
+      question: "قائد الجيش الإسلامي الذي كان وجهته الأردن؟",
+      options: ["شرحبيل بن حسنه", "خالد بن الوليد"],
+      answer: "شرحبيل بن حسنه"
+    },
+    {
+      question: "يقع ضريح الصحابي الحارث بن عمير الأزدي في؟",
+      options: ["الطفيلة", "المفرق"],
+      answer: "الطفيلة"
+    },
+    {
+      question: "دخل الأردن تحت الحكم الأموي في عام؟",
+      options: ["662", "750"],
+      answer: "662"
+    },
+    {
+      question: "اتخذ العباسيون شعارهم اللون؟",
+      options: ["الأسود", "الأبيض"],
+      answer: "الأسود"
+    },
+    {
+      question: "بنيت قلعة عجلون في العصر؟",
+      options: ["الأيوبي", "العثماني"],
+      answer: "الأيوبي"
+    },
+    {
+      question: "مؤلف كتاب تاريخ مراة الزمان هو؟",
+      options: ["سبط بن الجوزي", "ابن كثير"],
+      answer: "سبط بن الجوزي"
+    },
+    {
+      question: "اللواء الذي تشكل في عام 1894 هو؟",
+      options: ["الكرك", "عمان"],
+      answer: "الكرك"
+    },
+    {
+      question: "الأمير الهاشمي الذي حرر مدينة الطائف؟",
+      options: ["عبد الله بن الحسين", "شيرزاد بن الحسين"],
+      answer: "عبد الله بن الحسين"
+    },
+    {
+      question: "المعركة التي حدثت في عام 1920؟",
+      options: ["ميسلون", "معركة الكرك"],
+      answer: "ميسلون"
+    }
+  ]
+};
+
+function startQuiz(type) {
+  document.getElementById('selectionDiv').style.display = "none";
+  document.getElementById('quizDiv').style.display = "block";
+
+  const form = document.getElementById('quizForm');
+  form.innerHTML = "";
+
+  quizData[type].forEach((q, index) => {
+    const qDiv = document.createElement('div');
+    qDiv.classList.add('question');
+    qDiv.innerHTML = `<p><b>${index+1}. ${q.question}</b></p>`;
+    const optionsDiv = document.createElement('div');
+    optionsDiv.classList.add('options');
+
+    q.options.forEach(opt => {
+      const label = document.createElement('label');
+      label.innerHTML = `<input type="radio" name="q${index}" value="${opt}"> ${opt}`;
+      optionsDiv.appendChild(label);
+    });
+
+    qDiv.appendChild(optionsDiv);
+    form.appendChild(qDiv);
+  });
+}
+
+function checkAnswers() {
+  const form = document.getElementById('quizForm');
+  const resultsDiv = document.getElementById('resultDiv');
+  let score = 0;
+
+  for(let i=0;i<form.elements.length;i+=quizData["دين"][0].options.length) {
+    const radios = form.elements[i].name;
+    // نمر عبر كل سؤال
+  }
+
+  const totalQuestions = document.querySelectorAll('.question').length;
+
+  quizDataType = Object.keys(quizData);
+  score = 0;
+
+  quizDataType.forEach(type => {
+    quizData[type].forEach((q,index) => {
+      const userAnswer = form[`q${index}`]?.value;
+      if(userAnswer === q.answer) score++;
+    });
+  });
+
+  resultsDiv.innerHTML = `✅ نتيجتك: ${score} من ${totalQuestions}`;
+}
+
+function goBack() {
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
